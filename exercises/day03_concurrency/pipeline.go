@@ -6,13 +6,44 @@ package day3
 // before returning deadlocks — there's no receiver yet.
 
 // gen emits nums on a channel and closes it when finished.
-// HINT: go func(){ defer close(out); for _, n := range nums { out <- n } }()
-func gen(nums ...int) <-chan int { panic("TODO: implement gen") }
+func gen(nums ...int) <-chan int {
+	out := make(chan int)
+
+	go func() {
+		for _, n := range nums {
+			out <- n
+		}
+
+		close(out)
+	}()
+
+	return out
+}
 
 // sq squares each value from in and forwards it, closing its output when in drains.
-// HINT: go func(){ defer close(out); for n := range in { out <- n*n } }()
-func sq(in <-chan int) <-chan int { panic("TODO: implement sq") }
+func sq(in <-chan int) <-chan int {
+	out := make(chan int)
+
+	go func() {
+		for n := range in {
+			out <- n * n
+		}
+
+		close(out)
+	}()
+
+	return out
+}
 
 // SumOfSquares wires gen -> sq -> sink and returns the total.
-// HINT: for v := range sq(gen(nums...)) { total += v }
-func SumOfSquares(nums ...int) int { panic("TODO: implement SumOfSquares") }
+func SumOfSquares(nums ...int) int {
+
+	data := gen(nums...)
+	acc := 0
+
+	for n := range sq(data) {
+		acc += n
+	}
+
+	return acc
+}

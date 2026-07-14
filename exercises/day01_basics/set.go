@@ -5,8 +5,6 @@
 package day1
 
 // Set is a generic set built on the idiomatic map[T]struct{} pattern.
-// HINT: struct{} is a zero-width value, so the map stores keys only — which is
-// exactly what a set is. `comparable` is required because map keys must be comparable.
 type Set[T comparable] struct {
 	m map[T]struct{}
 }
@@ -21,26 +19,49 @@ func NewSet[T comparable](items ...T) *Set[T] {
 }
 
 // Add inserts v (idempotent).
-// HINT: `s.m[v] = struct{}{}` — writing the same key twice is naturally idempotent.
-func (s *Set[T]) Add(v T) { panic("TODO: implement Set.Add") }
+func (s *Set[T]) Add(v T) {
+	s.m[v] = struct{}{}
+}
 
 // Remove deletes v (no-op if absent).
-// HINT: the builtin delete(s.m, v) already no-ops when the key is absent.
-func (s *Set[T]) Remove(v T) { panic("TODO: implement Set.Remove") }
+func (s *Set[T]) Remove(v T) {
+	delete(s.m, v)
+}
 
 // Contains reports whether v is present.
-// HINT: comma-ok on the map: `_, ok := s.m[v]; return ok`.
-func (s *Set[T]) Contains(v T) bool { panic("TODO: implement Set.Contains") }
+func (s *Set[T]) Contains(v T) bool {
+	_, ok := s.m[v]
+
+	return ok
+}
 
 // Len returns the number of elements.
-// HINT: len() works directly on a map.
-func (s *Set[T]) Len() int { panic("TODO: implement Set.Len") }
+func (s *Set[T]) Len() int {
+	return len(s.m)
+}
 
 // Items returns the elements in unspecified order.
-// HINT: pre-size with make([]T, 0, len(s.m)), then range the map collecting keys.
-// Map order is randomized; the test sorts before comparing, so don't fight it.
-func (s *Set[T]) Items() []T { panic("TODO: implement Set.Items") }
+func (s *Set[T]) Items() []T {
+	items := make([]T, 0, len(s.m))
+
+	for it := range s.m {
+		items = append(items, it)
+	}
+
+	return items
+}
 
 // Union returns a new set containing elements from both s and other.
-// HINT: make a new set, add all of s's elements, then all of other's. Reuse Add.
-func (s *Set[T]) Union(other *Set[T]) *Set[T] { panic("TODO: implement Set.Union") }
+func (s *Set[T]) Union(other *Set[T]) *Set[T] {
+	newSet := NewSet[T]()
+
+	for it := range s.m {
+		newSet.Add(it)
+	}
+
+	for it := range other.m {
+		newSet.Add(it)
+	}
+
+	return newSet
+}
