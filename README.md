@@ -1,4 +1,4 @@
-# Go in a Week — for a Principal Scala Engineer
+# Go in a Fortnight — for a Principal Scala Engineer
 
 A high-intensity, 7-day ramp to write Go at staff level. Written assuming you already
 have deep systems intuition (Scala/JVM, C++, Z80), so it spends **zero** time on
