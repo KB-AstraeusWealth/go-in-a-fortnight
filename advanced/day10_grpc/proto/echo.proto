@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package echo;
+
+option go_package = "github.com/kb/go-in-a-week/advanced/day10_grpc/echopb";
+
+service Echo {
+  rpc Say(SayRequest) returns (SayReply);
+}
+
+message SayRequest { string message = 1; }
+message SayReply   { string message = 1; }

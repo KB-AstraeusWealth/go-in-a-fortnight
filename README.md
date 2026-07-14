@@ -155,20 +155,24 @@ The five reflexes to unlearn immediately:
 
 ---
 
-## Day 7 — Staff-level concerns & capstone
+## Days 7–13 — Advanced track (hands-on)
 
-**Goal:** the things you'll be *evaluated on* as a staff engineer: performance, project structure, testing discipline, and leading on idiom.
+Days 1–6 are stdlib-only and fully offline. The advanced track lives in its own module
+(`advanced/`, separate `go.mod`) because it uses real dependencies and, for some days,
+external services (Docker, the Pub/Sub emulator). Same stub-and-failing-test format.
+See `advanced/README.md` for prerequisites and setup.
 
-**Read/learn:**
-- **Performance & memory:** benchmarks (`go test -bench . -benchmem`), `pprof` (CPU/heap/goroutine/block/mutex profiles), **escape analysis** (`go build -gcflags=-m`) — when a value escapes to the heap vs stays on the stack. Your C++ instincts about allocation cost are directly relevant; Go just hides allocation behind the GC, so you profile to see it.
-- **GC model:** concurrent, low-latency, non-generational, non-compacting mark-sweep. Tune via `GOGC` and the soft memory limit `GOMEMLIMIT` (1.19+). Usually you reduce allocations rather than tune the GC.
-- **Project layout:** package = unit of design (organize by capability/domain, not by "models/controllers"). Avoid circular imports (the compiler forbids them — a useful forcing function). Know the `internal/` convention. Read the "Style Guide" / "Go Code Review Comments" wiki — this is the vocabulary you'll use in reviews.
-- **Testing discipline:** table-driven tests (the dominant idiom), `t.Run` subtests, `testing.T` helpers, `httptest`, golden files, fuzzing (`go test -fuzz`), and when integration tests earn their keep. `testify` is common but stdlib-only is very achievable and often preferred.
-- **Anti-patterns Scala devs bring:** over-abstraction, premature interfaces (define them when you have 2+ implementers or need to mock at a boundary), generic soup, `panic` as control flow, giant "utils" packages, and getter/setter ceremony.
+- Day 7 — External libraries: `go get`, modules and `go.sum`, semantic import versioning; hands-on with `errgroup` (structured concurrency — the library version of your Day 4 code) and `google/uuid`.
+- Day 8 — PostgreSQL with `pgx`: connection pooling, `context` on every query, a small repository (CRUD), migrations. Integration test against a real Postgres.
+- Day 9 — Messaging with GCP Pub/Sub: publisher, subscriber, ack/nack, at-least-once delivery. Integration test against the Pub/Sub emulator.
+- Day 10 — gRPC + protobuf: define a service in `.proto`, generate Go, implement client/server, test in-process with `bufconn`.
+- Day 11 — Observability: Prometheus metrics + OpenTelemetry tracing + `slog`, wired into an HTTP service (where the staff-level perf/`pprof` concerns live).
+- Day 12 — Testing deep-dive: `testcontainers` (real Postgres in tests), `testify`, table-driven patterns, fuzzing.
+- Day 13 — Config & lifecycle: the functional-options pattern, env/flag config, graceful wiring.
 
-**Capstone (`exercises/day07_capstone`):** a spec, not a solution — combine days 4–6 into a small service that ingests a stream over HTTP, processes it through a bounded concurrent pipeline with per-request cancellation, batches results to an (in-memory) store, exposes health + metrics endpoints, and shuts down gracefully. Success = it passes `go vet`, `go test -race ./...`, and reads like code a mid-level engineer could safely extend.
-
----
+Staff-level concerns from the original outline — profiling (`pprof`, benchmarks, escape
+analysis), the GC model (`GOGC`/`GOMEMLIMIT`), project layout, and testing discipline —
+are folded into the relevant days above (11 and 12) rather than a standalone capstone.
 
 ## After the week (staying honest about the gap)
 
